@@ -81,8 +81,8 @@ GitHub Push                    브랜치 활용 + 충돌 해결
 | Git 공식 다운로드 | [git-scm.com](https://git-scm.com) |
 | GitHub 가입 | [github.com](https://github.com) |
 | VSCode 다운로드 | [code.visualstudio.com](https://code.visualstudio.com) |
-| 강사 유튜브 채널 | (링크 입력) |
-| 강사 블로그 | (링크 입력) |
+| 강사 유튜브 채널 | ([링크 입력](https://www.youtube.com/@%EB%A9%94%EC%9D%B4%EC%BB%A4%ED%95%9C%EC%8C%A4)) |
+| 강사 블로그 | ([링크 입력](https://blog.naver.com/makerhanssem)) |
 
 <br>
 

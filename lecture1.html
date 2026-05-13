@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git & GitHub 강의 - 1회차</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background: #f5f5f3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 32px 16px;
+  }
+  .header {
+    width: 100%;
+    max-width: 780px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .header-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #888;
+    letter-spacing: 0.04em;
+  }
+  .header-badge {
+    font-size: 12px;
+    font-weight: 500;
+    background: #E6F1FB;
+    color: #0C447C;
+    border-radius: 20px;
+    padding: 4px 14px;
+  }
+  .slide-wrapper {
+    width: 100%;
+    max-width: 780px;
+    position: relative;
+  }
+  .slide {
+    display: none;
+    background: #fff;
+    border: 1px solid #e8e8e6;
+    border-radius: 16px;
+    padding: 52px 60px;
+    min-height: 520px;
+    flex-direction: column;
+    justify-content: space-between;
+    animation: fadeIn 0.25s ease;
+  }
+  .slide.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .slide-number { font-size: 12px; color: #aaa; letter-spacing: 0.08em; margin-bottom: 28px; }
+  .slide-tag { display: inline-block; font-size: 11px; font-weight: 500; background: #E6F1FB; color: #0C447C; border-radius: 4px; padding: 3px 10px; margin-bottom: 14px; }
+  .slide-title { font-size: 30px; font-weight: 600; color: #1a1a1a; line-height: 1.3; margin-bottom: 8px; }
+  .slide-subtitle { font-size: 15px; color: #888; margin-bottom: 32px; }
+
+  /* 카드 그리드 */
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .card { background: #f8f8f6; border-radius: 10px; padding: 20px 22px; }
+  .card-icon { font-size: 22px; margin-bottom: 10px; color: #185FA5; }
+  .card-title { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
+  .card-desc { font-size: 13px; color: #666; line-height: 1.65; }
+
+  /* 흐름 도식 */
+  .flow { display: flex; align-items: center; margin-bottom: 22px; background: #f8f8f6; border-radius: 10px; padding: 18px 20px; }
+  .flow-box { flex: 1; text-align: center; }
+  .flow-label { font-size: 11px; color: #aaa; margin-bottom: 4px; }
+  .flow-name { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+  .flow-desc { font-size: 11px; color: #888; margin-top: 3px; }
+  .flow-arrow { display: flex; flex-direction: column; align-items: center; padding: 0 8px; }
+  .flow-cmd { font-family: 'Courier New', monospace; font-size: 11px; color: #185FA5; background: #E6F1FB; border-radius: 4px; padding: 2px 7px; margin-bottom: 4px; white-space: nowrap; }
+  .arrow-icon { color: #bbb; font-size: 18px; }
+
+  /* 2단 레이아웃 */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .section-label { font-size: 12px; font-weight: 600; color: #aaa; letter-spacing: 0.06em; margin-bottom: 10px; text-transform: uppercase; }
+
+  /* 명령어 목록 */
+  .cmd-list { display: flex; flex-direction: column; gap: 8px; }
+  .cmd-row { display: flex; align-items: flex-start; gap: 10px; padding: 11px 14px; background: #f8f8f6; border-radius: 10px; }
+  .cmd-code { font-family: 'Courier New', monospace; font-size: 11px; color: #185FA5; background: #fff; border: 1px solid #cde0f5; border-radius: 4px; padding: 2px 8px; white-space: nowrap; flex-shrink: 0; }
+  .cmd-desc { font-size: 12px; color: #666; line-height: 1.5; margin-top: 2px; }
+
+  /* 단계 목록 */
+  .steps { display: flex; flex-direction: column; gap: 8px; }
+  .step { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: #f8f8f6; border-radius: 10px; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #0C447C; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 3px; }
+  .step-desc { font-size: 12px; color: #666; line-height: 1.5; }
+
+  /* 터미널 */
+  .terminal { background: #1e1e2e; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; }
+  .terminal-bar { display: flex; gap: 6px; margin-bottom: 12px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .tline { font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.9; }
+  .t-p { color: #6ee7b7; }
+  .t-c { color: #e2e8f0; }
+  .t-o { color: #64748b; }
+
+  /* 구분선 */
+  .divider { border: none; border-top: 1px solid #f0f0ee; margin: 0 0 20px; }
+
+  /* 키포인트 */
+  .key-point { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .key-dot { width: 6px; height: 6px; border-radius: 50%; background: #378ADD; margin-top: 7px; flex-shrink: 0; }
+  .key-text { font-size: 14px; color: #555; line-height: 1.6; }
+
+  /* 팁 박스 */
+  .tip-box { display: flex; align-items: flex-start; gap: 10px; border: 1px solid #cde0f5; border-radius: 10px; padding: 13px 16px; background: #E6F1FB; }
+  .tip-icon { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+  .tip-text { font-size: 13px; color: #0C447C; line-height: 1.6; }
+
+  /* 브랜치 시각화 */
+  .branch-visual { background: #f8f8f6; border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; }
+  .branch-row { display: flex; align-items: center; margin-bottom: 10px; }
+  .branch-row:last-child { margin-bottom: 0; }
+  .b-label { font-size: 11px; font-weight: 600; width: 70px; flex-shrink: 0; }
+  .b-label-main { color: #185FA5; }
+  .b-label-feat { color: #0F6E56; }
+  .b-commits { display: flex; align-items: center; flex: 1; }
+  .b-commit { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+  .b-main { background: #E6F1FB; color: #0C447C; }
+  .b-feat { background: #E1F5EE; color: #085041; }
+  .b-line { flex: 1; height: 2px; }
+  .b-line-main { background: #B5D4F4; }
+  .b-line-feat { background: #9FE1CB; }
+  .merge-label { font-size: 11px; color: #185FA5; font-weight: 500; white-space: nowrap; margin-left: 6px; }
+  .badge-done { display: inline-block; font-size: 10px; font-weight: 600; background: #EAF3DE; color: #3B6D11; border-radius: 20px; padding: 2px 10px; margin-left: 8px; }
+
+  /* 네비게이션 */
+  .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; }
+  .nav-info { font-size: 12px; color: #aaa; }
+  .nav-btns { display: flex; gap: 8px; }
+  .nav-btn {
+    font-size: 13px; font-family: inherit;
+    background: none; border: 1px solid #cde0f5;
+    color: #185FA5; border-radius: 8px;
+    padding: 8px 20px; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .nav-btn:hover { background: #E6F1FB; }
+  .nav-btn.prev { color: #999; border-color: #e0e0de; }
+  .nav-btn.prev:hover { background: #f5f5f3; }
+  .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* 진행 표시줄 */
+  .progress-bar { width: 100%; max-width: 780px; height: 3px; background: #e8e8e6; border-radius: 2px; margin-bottom: 16px; }
+  .progress-fill { height: 100%; background: #378ADD; border-radius: 2px; transition: width 0.3s ease; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">Git &amp; GitHub 강의 · 1회차</div>
+  <div class="header-badge" id="slide-counter">1 / 6</div>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progress" style="width: 16.6%"></div>
+</div>
+
+<div class="slide-wrapper">
+
+  <!-- 슬라이드 1: 개념 이해 -->
+  <div class="slide active">
+    <div>
+      <div class="slide-number">1회차 · 01 / 06</div>
+      <div class="slide-tag">개념 이해</div>
+      <div class="slide-title">Git과 GitHub, 무엇이 다를까?</div>
+      <div class="slide-subtitle">버전 관리의 개념과 두 도구의 역할을 이해합니다</div>
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">🌿</div>
+          <div class="card-title">Git</div>
+          <div class="card-desc">내 컴퓨터에 설치하는 <strong>버전 관리 도구</strong>. 파일의 변경 이력을 추적하고 이전 상태로 되돌릴 수 있습니다.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🐙</div>
+          <div class="card-title">GitHub</div>
+          <div class="card-desc">Git 저장소를 인터넷에 올려두는 <strong>클라우드 플랫폼</strong>. 다른 사람과 협업하거나 작업물을 공개할 수 있습니다.</div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="key-point"><div class="key-dot"></div><div class="key-text">Git은 혼자서도 사용할 수 있고, GitHub 없이도 동작합니다</div></div>
+      <div class="key-point"><div class="key-dot"></div><div class="key-text">GitHub는 Git이 있어야 의미가 있습니다 — Git이 먼저입니다</div></div>
+      <div class="key-point"><div class="key-dot"></div><div class="key-text">비유: Git = 일기장, GitHub = 일기장을 올려두는 클라우드</div></div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 1회차</div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)" disabled>← 이전</button>
+        <button class="nav-btn" onclick="changeSlide(1)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 슬라이드 2: Git 설치 -->
+  <div class="slide">
+    <div>
+      <div class="slide-number">1회차 · 02 / 06</div>
+      <div class="slide-tag">Git 설치</div>
+      <div class="slide-title">Git 설치하기</div>
+      <div class="slide-subtitle">Windows 환경에서 Git을 설치하고 기본 설정까지 완료합니다</div>
+      <div class="steps" style="margin-bottom:16px;">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div><div class="step-title">Git 공식 사이트 접속</div><div class="step-desc">브라우저에서 git-scm.com 접속 → 운영체제에 맞는 설치 파일 자동 감지</div></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div><div class="step-title">설치 파일 다운로드 및 실행</div><div class="step-desc">Download for Windows 클릭 → .exe 파일 실행 → 기본값 유지하며 Next 진행</div></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-title">설치 확인</div>
+            <div class="step-desc">Git Bash 실행 후 버전 확인</div>
+            <div style="margin-top:6px;"><span class="cmd-code">git --version</span></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div>
+            <div class="step-title">사용자 정보 등록 (최초 1회)</div>
+            <div class="step-desc">커밋할 때 기록될 이름과 이메일을 설정합니다</div>
+            <div style="margin-top:6px; display:flex; gap:8px; flex-wrap:wrap;">
+              <span class="cmd-code">git config --global user.name "이름"</span>
+              <span class="cmd-code">git config --global user.email "이메일"</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text">설치 중 기본값(Next)으로만 진행해도 괜찮습니다. 단, 기본 에디터 선택 시 Visual Studio Code를 선택하면 나중에 편리합니다.</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 1회차</div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">← 이전</button>
+        <button class="nav-btn" onclick="changeSlide(1)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 슬라이드 3: Git Bash -->
+  <div class="slide">
+    <div>
+      <div class="slide-number">1회차 · 03 / 06</div>
+      <div class="slide-tag">Git Bash</div>
+      <div class="slide-title">Git Bash로 문서 만들기</div>
+      <div class="slide-subtitle">터미널 명령어로 폴더와 파일을 만들고 Git 저장소를 초기화합니다</div>
+      <div class="two-col" style="margin-bottom:16px;">
+        <div>
+          <div class="section-label">폴더 · 파일 명령어</div>
+          <div class="cmd-list">
+            <div class="cmd-row"><div class="cmd-code">mkdir 폴더명</div><div class="cmd-desc">새 폴더 만들기</div></div>
+            <div class="cmd-row"><div class="cmd-code">cd 폴더명</div><div class="cmd-desc">폴더 안으로 이동</div></div>
+            <div class="cmd-row"><div class="cmd-code">cd ..</div><div class="cmd-desc">상위 폴더로 이동</div></div>
+            <div class="cmd-row"><div class="cmd-code">touch 파일명.txt</div><div class="cmd-desc">빈 파일 만들기</div></div>
+            <div class="cmd-row"><div class="cmd-code">ls</div><div class="cmd-desc">현재 폴더 내용 확인</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">Git 초기화</div>
+          <div class="cmd-list">
+            <div class="cmd-row"><div class="cmd-code">git init</div><div class="cmd-desc">현재 폴더를 Git 저장소로 초기화</div></div>
+            <div class="cmd-row"><div class="cmd-code">git status</div><div class="cmd-desc">현재 상태 확인 (변경된 파일 목록)</div></div>
+            <div class="cmd-row"><div class="cmd-code">ls -a</div><div class="cmd-desc">.git 폴더 포함 숨김 파일까지 확인</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <div class="tline"><span class="t-p">$ </span><span class="t-c">mkdir my-project && cd my-project</span></div>
+        <div class="tline"><span class="t-p">$ </span><span class="t-c">git init</span></div>
+        <div class="tline"><span class="t-o">Initialized empty Git repository in .git/</span></div>
+        <div class="tline"><span class="t-p">$ </span><span class="t-c">touch README.md && git status</span></div>
+        <div class="tline"><span class="t-o">Untracked files: README.md</span></div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text">git init 을 하면 폴더 안에 숨김 폴더 .git 이 생깁니다. 이 폴더가 모든 버전 정보를 저장하는 핵심입니다. 절대 삭제하지 마세요!</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 1회차</div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">← 이전</button>
+        <button class="nav-btn" onclick="changeSlide(1)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 슬라이드 4: add & commit -->
+  <div class="slide">
+    <div>
+      <div class="slide-number">1회차 · 04 / 06</div>
+      <div class="slide-tag">add · commit</div>
+      <div class="slide-title">add 및 commit 하기</div>
+      <div class="slide-subtitle">파일 변경사항을 Git에 기록하는 핵심 두 단계를 익힙니다</div>
+      <div class="flow">
+        <div class="flow-box"><div class="flow-label">작업 공간</div><div class="flow-name">Working Directory</div><div class="flow-desc">파일을 편집하는 곳</div></div>
+        <div class="flow-arrow"><div class="flow-cmd">git add</div><div class="arrow-icon">→</div></div>
+        <div class="flow-box"><div class="flow-label">임시 저장소</div><div class="flow-name">Staging Area</div><div class="flow-desc">커밋할 파일을 모아두는 곳</div></div>
+        <div class="flow-arrow"><div class="flow-cmd">git commit</div><div class="arrow-icon">→</div></div>
+        <div class="flow-box"><div class="flow-label">로컬 저장소</div><div class="flow-name">Repository</div><div class="flow-desc">버전이 기록되는 곳</div></div>
+      </div>
+      <div class="section-label">주요 명령어</div>
+      <div class="cmd-list" style="margin-bottom:16px;">
+        <div class="cmd-row"><div class="cmd-code">git add 파일명</div><div class="cmd-desc">특정 파일을 Staging Area에 올리기</div></div>
+        <div class="cmd-row"><div class="cmd-code">git add .</div><div class="cmd-desc">변경된 모든 파일을 한번에 올리기</div></div>
+        <div class="cmd-row"><div class="cmd-code">git commit -m "메시지"</div><div class="cmd-desc">메시지와 함께 현재 상태를 기록 (버전 생성)</div></div>
+        <div class="cmd-row"><div class="cmd-code">git log</div><div class="cmd-desc">지금까지의 커밋 이력 확인</div></div>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <div class="tline"><span class="t-p">$ </span><span class="t-c">git add .</span></div>
+        <div class="tline"><span class="t-p">$ </span><span class="t-c">git commit -m "첫 번째 커밋"</span></div>
+        <div class="tline"><span class="t-o">[main (root-commit) a1b2c3d] 첫 번째 커밋</span></div>
+        <div class="tline"><span class="t-o"> 1 file changed, 0 insertions(+)</span></div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text">커밋 메시지는 나중에 봤을 때 무엇을 했는지 알 수 있도록 구체적으로 적으세요. "수정함" 보다는 "로그인 버튼 색상 변경"처럼요.</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 1회차</div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">← 이전</button>
+        <button class="nav-btn" onclick="changeSlide(1)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 슬라이드 5: GitHub Push -->
+  <div class="slide">
+    <div>
+      <div class="slide-number">1회차 · 05 / 06</div>
+      <div class="slide-tag">GitHub Push</div>
+      <div class="slide-title">GitHub 로그인 후 Push하기</div>
+      <div class="slide-subtitle">로컬 저장소의 내용을 GitHub 원격 저장소에 올립니다</div>
+      <div class="flow" style="margin-bottom:20px;">
+        <div class="flow-box"><div class="flow-label">내 컴퓨터</div><div class="flow-name">로컬 저장소</div><div class="flow-desc">commit 완료 상태</div></div>
+        <div class="flow-arrow"><div class="flow-cmd">git push</div><div class="arrow-icon">→</div></div>
+        <div class="flow-box"><div class="flow-label">인터넷</div><div class="flow-name">GitHub 원격 저장소</div><div class="flow-desc">누구나 접근 가능</div></div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="section-label">GitHub 레포 만들기</div>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div><div class="step-title">GitHub 로그인</div><div class="step-desc">github.com 접속 후 로그인</div></div></div>
+            <div class="step"><div class="step-num">2</div><div><div class="step-title">새 레포지토리 생성</div><div class="step-desc">+ 버튼 → New repository → 이름 입력 → Create</div></div></div>
+            <div class="step"><div class="step-num">3</div><div><div class="step-title">HTTPS 주소 복사</div><div class="step-desc">생성된 레포의 주소 복사</div></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">Push 명령어</div>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div><div class="step-title">원격 저장소 연결</div><div class="step-desc"><span class="cmd-code">git remote add origin 주소</span></div></div></div>
+            <div class="step"><div class="step-num">2</div><div><div class="step-title">브랜치 이름 설정</div><div class="step-desc"><span class="cmd-code">git branch -M main</span></div></div></div>
+            <div class="step"><div class="step-num">3</div><div><div class="step-title">Push 실행</div><div class="step-desc"><span class="cmd-code">git push -u origin main</span></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box" style="margin-top:16px;">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text">두 번째 push부터는 git push 만 입력하면 됩니다. -u 옵션은 최초 연결 시 한 번만 필요합니다.</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 1회차</div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">← 이전</button>
+        <button class="nav-btn" onclick="changeSlide(1)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 슬라이드 6: 브랜치 -->
+  <div class="slide">
+    <div>
+      <div class="slide-number">1회차 · 06 / 06</div>
+      <div class="slide-tag">브랜치</div>
+      <div class="slide-title">브랜치 기초 익히기</div>
+      <div class="slide-subtitle">원본을 건드리지 않고 독립된 작업 공간을 만드는 방법을 익힙니다</div>
+      <div class="branch-visual">
+        <div class="branch-row">
+          <div class="b-label b-label-main">main</div>
+          <div class="b-commits">
+            <div class="b-commit b-main">C1</div>
+            <div class="b-line b-line-main"></div>
+            <div class="b-commit b-main">C2</div>
+            <div class="b-line b-line-main"></div>
+            <div class="b-commit b-main">C3</div>
+            <div class="b-line b-line-main" style="flex:0.5"></div>
+            <div style="width:56px;"></div>
+            <div class="b-line b-line-main" style="flex:0.5"></div>
+            <div class="b-commit b-main">C6</div>
+            <div class="merge-label">← merge</div>
+          </div>
+        </div>
+        <div class="branch-row" style="margin-top:4px;">
+          <div class="b-label b-label-feat">feature</div>
+          <div class="b-commits">
+            <div style="width:112px; flex-shrink:0;"></div>
+            <div class="b-commit b-feat">C4</div>
+            <div class="b-line b-line-feat"></div>
+            <div class="b-commit b-feat">C5</div>
+          </div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="section-label">브랜치 명령어</div>
+          <div class="cmd-list">
+            <div class="cmd-row"><div class="cmd-code">git branch</div><div class="cmd-desc">브랜치 목록 확인</div></div>
+            <div class="cmd-row"><div class="cmd-code">git branch 이름</div><div class="cmd-desc">새 브랜치 만들기</div></div>
+            <div class="cmd-row"><div class="cmd-code">git switch 이름</div><div class="cmd-desc">해당 브랜치로 이동</div></div>
+            <div class="cmd-row"><div class="cmd-code">git switch -c 이름</div><div class="cmd-desc">만들면서 바로 이동</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">병합 명령어</div>
+          <div class="cmd-list">
+            <div class="cmd-row"><div class="cmd-code">git merge 브랜치명</div><div class="cmd-desc">현재 브랜치에 합치기</div></div>
+            <div class="cmd-row"><div class="cmd-code">git branch -d 이름</div><div class="cmd-desc">병합 완료된 브랜치 삭제</div></div>
+            <div class="cmd-row"><div class="cmd-code">git log --oneline</div><div class="cmd-desc">한 줄로 커밋 이력 확인</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box" style="margin-top:16px;">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text">main은 항상 안정된 상태로 유지하고, 새 작업은 별도 브랜치에서 하는 것이 좋습니다. 브랜치는 복사본이 아니라 작업 방향이 나뉘는 것입니다.</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 1회차 완료 <span class="badge-done">1회차 끝 🎉</span></div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">← 이전</button>
+        <button class="nav-btn" disabled>완료</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function changeSlide(dir) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(total - 1, current + dir));
+    slides[current].classList.add('active');
+    document.getElementById('slide-counter').textContent = (current + 1) + ' / ' + total;
+    document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git & GitHub 강의 - 2회차</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background: #f5f5f3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 32px 16px;
+  }
+  .header {
+    width: 100%; max-width: 780px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .header-title { font-size: 14px; font-weight: 500; color: #888; letter-spacing: 0.04em; }
+  .header-badge { font-size: 12px; font-weight: 500; background: #E1F5EE; color: #085041; border-radius: 20px; padding: 4px 14px; }
+  .progress-bar { width: 100%; max-width: 780px; height: 3px; background: #e8e8e6; border-radius: 2px; margin-bottom: 16px; }
+  .progress-fill { height: 100%; background: #1D9E75; border-radius: 2px; transition: width 0.3s ease; }
+  .slide-wrapper { width: 100%; max-width: 780px; }
+  .slide {
+    display: none; background: #fff;
+    border: 1px solid #e8e8e6; border-radius: 16px;
+    padding: 52px 60px; min-height: 520px;
+    flex-direction: column; justify-content: space-between;
+    animation: fadeIn 0.25s ease;
+  }
+  .slide.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .slide-number { font-size: 12px; color: #aaa; letter-spacing: 0.08em; margin-bottom: 28px; }
+  .slide-tag { display: inline-block; font-size: 11px; font-weight: 500; background: #E1F5EE; color: #085041; border-radius: 4px; padding: 3px 10px; margin-bottom: 14px; }
+  .slide-title { font-size: 30px; font-weight: 600; color: #1a1a1a; line-height: 1.3; margin-bottom: 8px; }
+  .slide-subtitle { font-size: 15px; color: #888; margin-bottom: 28px; }
+  .section-label { font-size: 12px; font-weight: 600; color: #aaa; letter-spacing: 0.06em; margin-bottom: 10px; text-transform: uppercase; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .card { background: #f8f8f6; border-radius: 10px; padding: 18px 20px; }
+  .card-icon { font-size: 20px; margin-bottom: 8px; }
+  .card-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 5px; }
+  .card-desc { font-size: 12px; color: #666; line-height: 1.6; }
+  .cmd-list { display: flex; flex-direction: column; gap: 8px; }
+  .cmd-row { display: flex; align-items: flex-start; gap: 10px; padding: 11px 14px; background: #f8f8f6; border-radius: 10px; }
+  .cmd-code { font-family: 'Courier New', monospace; font-size: 11px; color: #0F6E56; background: #fff; border: 1px solid #9FE1CB; border-radius: 4px; padding: 2px 8px; white-space: nowrap; flex-shrink: 0; }
+  .cmd-desc { font-size: 12px; color: #666; line-height: 1.5; margin-top: 2px; }
+  .steps { display: flex; flex-direction: column; gap: 8px; }
+  .step { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: #f8f8f6; border-radius: 10px; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: #E1F5EE; color: #085041; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 3px; }
+  .step-desc { font-size: 12px; color: #666; line-height: 1.5; }
+  .terminal { background: #1e1e2e; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; }
+  .terminal-bar { display: flex; gap: 6px; margin-bottom: 12px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .tline { font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.9; }
+  .t-p { color: #6ee7b7; }
+  .t-c { color: #e2e8f0; }
+  .t-o { color: #64748b; }
+  .t-warn { color: #fbbf24; }
+  .t-err { color: #f87171; }
+  .tip-box { display: flex; align-items: flex-start; gap: 10px; border: 1px solid #9FE1CB; border-radius: 10px; padding: 13px 16px; background: #E1F5EE; }
+  .tip-icon { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+  .tip-text { font-size: 13px; color: #085041; line-height: 1.6; }
+  .warn-box { display: flex; align-items: flex-start; gap: 10px; border: 1px solid #FAC775; border-radius: 10px; padding: 13px 16px; background: #FAEEDA; }
+  .warn-text { font-size: 13px; color: #633806; line-height: 1.6; }
+  .flow { display: flex; align-items: center; margin-bottom: 20px; background: #f8f8f6; border-radius: 10px; padding: 18px 20px; }
+  .flow-box { flex: 1; text-align: center; }
+  .flow-label { font-size: 11px; color: #aaa; margin-bottom: 4px; }
+  .flow-name { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+  .flow-desc { font-size: 11px; color: #888; margin-top: 3px; }
+  .flow-arrow { display: flex; flex-direction: column; align-items: center; padding: 0 8px; }
+  .flow-cmd { font-family: 'Courier New', monospace; font-size: 11px; color: #0F6E56; background: #E1F5EE; border-radius: 4px; padding: 2px 7px; margin-bottom: 4px; white-space: nowrap; }
+  .arrow-icon { color: #bbb; font-size: 18px; }
+  .conflict-box { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .conflict-card { background: #f8f8f6; border-radius: 10px; padding: 14px 16px; }
+  .conflict-title { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+  .conflict-code { font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.7; color: #444; }
+  .c-red { color: #e24b4a; }
+  .c-blue { color: #185FA5; }
+  .c-gray { color: #888; }
+  .badge-done { display: inline-block; font-size: 10px; font-weight: 600; background: #EAF3DE; color: #3B6D11; border-radius: 20px; padding: 2px 10px; margin-left: 8px; }
+  .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+  .nav-info { font-size: 12px; color: #aaa; }
+  .nav-btns { display: flex; gap: 8px; }
+  .nav-btn { font-size: 13px; font-family: inherit; background: none; border: 1px solid #9FE1CB; color: #0F6E56; border-radius: 8px; padding: 8px 20px; cursor: pointer; transition: background 0.15s; }
+  .nav-btn:hover { background: #E1F5EE; }
+  .nav-btn.prev { color: #999; border-color: #e0e0de; }
+  .nav-btn.prev:hover { background: #f5f5f3; }
+  .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .divider { border: none; border-top: 1px solid #f0f0ee; margin: 0 0 20px; }
+  .review-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .review-item { background: #f8f8f6; border-radius: 10px; padding: 14px 16px; }
+  .review-cmd { font-family: 'Courier New', monospace; font-size: 11px; color: #0F6E56; background: #fff; border: 1px solid #9FE1CB; border-radius: 4px; padding: 2px 7px; margin-bottom: 6px; display: inline-block; }
+  .review-desc { font-size: 12px; color: #666; line-height: 1.5; }
+  .ext-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .ext-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #f8f8f6; border-radius: 10px; }
+  .ext-icon { font-size: 20px; flex-shrink: 0; }
+  .ext-name { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 2px; }
+  .ext-desc { font-size: 12px; color: #666; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">Git &amp; GitHub 강의 · 2회차</div>
+  <div class="header-badge" id="slide-counter">1 / 7</div>
+</div>
+<div class="progress-bar">
+  <div class="progress-fill" id="progress" style="width: 14.2%"></div>
+</div>
+
+<div class="slide-wrapper">
+
+  <!-- 슬라이드 1: 1회차 복습 -->
+  <div class="slide active">
+    <div>
+      <div class="slide-number">2회차 · 01 / 07</div>
+      <div class="slide-tag">복습</div>
+      <div class="slide-title">1회차 핵심 복습</div>
+      <div class="slide-subtitle">지난 시간 배운 핵심 명령어를 빠르게 정리합니다</div>
+      <div class="review-grid">
+        <div class="review-item">
+          <div class="review-cmd">git init</div>
+          <div class="review-desc">폴더를 Git 저장소로 초기화</div>
+        </div>
+        <div class="review-item">
+          <div class="review-cmd">git status</div>
+          <div class="review-desc">현재 변경 상태 확인</div>
+        </div>
+        <div class="review-item">
+          <div class="review-cmd">git add .</div>
+          <div class="review-desc">모든 변경 파일 스테이징</div>
+        </div>
+        <div class="review-item">
+          <div class="review-cmd">git commit -m</div>
+          <div class="review-desc">메시지와 함께 버전 저장</div>
+        </div>
+        <div class="review-item">
+          <div class="review-cmd">git push</div>
+          <div class="review-desc">GitHub에 올리기</div>
+        </div>
+        <div class="review-item">
+          <div class="review-cmd">git branch</div>
+          <div class="review-desc">브랜치 목록 확인</div>
+        </div>
+        <div class="review-item">
+          <div class="review-cmd">git switch -c</div>
+          <div class="review-desc">브랜치 생성 후 이동</div>
+        </div>
+        <div class="review-item">
+          <div class="review-cmd">git merge</div>
+          <div class="review-desc">브랜치 병합</div>
+        </div>
+        <div class="review-item">
+          <div class="review-cmd">git log --oneline</div>
+          <div class="review-desc">한 줄 커밋 이력 확인</div>
+        </div>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <div class="tline"><span class="t-o"># 1회차 전체 흐름 한눈에 보기</span></div>
+        <div class="tline"><span class="t-p">$ </span><span class="t-c">git init → git add . → git commit -m "메시지"</span></div>
+        <div class="tline"><span class="t-p">$ </span><span class="t-c">git remote add origin 주소 → git push -u origin main</span></div>
+        <div class="tline"><span class="t-p">$ </span><span class="t-c">git switch -c feature → (작업) → git merge feature</span></div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text">헷갈릴 때는 git status 를 먼저 입력하세요. 현재 상황과 다음에 해야 할 것을 친절하게 알려줍니다.</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 2회차</div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)" disabled>← 이전</button>
+        <button class="nav-btn" onclick="changeSlide(1)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 슬라이드 2: VSCode -->
+  <div class="slide">
+    <div>
+      <div class="slide-number">2회차 · 02 / 07</div>
+      <div class="slide-tag">VSCode</div>
+      <div class="slide-title">VSCode 활용하기</div>
+      <div class="slide-subtitle">터미널 대신 VSCode에서 Git을 시각적으로 관리합니다</div>
+      <div class="two-col" style="margin-bottom:16px;">
+        <div>
+          <div class="section-label">Git Bash vs VSCode</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">🖥</div>
+              <div>
+                <div class="step-title">Git Bash (터미널)</div>
+                <div class="step-desc">명령어를 직접 입력. 정확하지만 외워야 함</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">💙</div>
+              <div>
+                <div class="step-title">VSCode (GUI)</div>
+                <div class="step-desc">클릭으로 add·commit·push 가능. 변경 파일을 색으로 표시</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">VSCode Git 패널 위치</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div><div class="step-title">소스 제어 패널 열기</div><div class="step-desc">왼쪽 사이드바 분기 아이콘 클릭 (Ctrl+Shift+G)</div></div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div><div class="step-title">변경 파일 확인</div><div class="step-desc">수정된 파일이 목록에 표시됨 (M=수정, U=새파일)</div></div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div><div class="step-title">+ 버튼으로 add</div><div class="step-desc">파일 옆 + 클릭 → Staged Changes로 이동</div></div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div><div class="step-title">메시지 입력 후 커밋</div><div class="step-desc">상단 입력창에 메시지 → Commit 버튼</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text">VSCode 하단 터미널(Ctrl+`)을 열면 Git Bash 명령어도 함께 사용할 수 있어요. GUI와 터미널을 함께 쓰면 가장 효율적입니다.</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 2회차</div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">← 이전</button>
+        <button class="nav-btn" onclick="changeSlide(1)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 슬라이드 3: 확장 앱 -->
+  <div class="slide">
+    <div>
+      <div class="slide-number">2회차 · 03 / 07</div>
+      <div class="slide-tag">확장 앱</div>
+      <div class="slide-title">Git 관련 확장 앱 설치</div>
+      <div class="slide-subtitle">VSCode를 더 강력하게 만들어주는 Git 관련 확장 프로그램을 설치합니다</div>
+      <div class="section-label" style="margin-bottom:12px;">추천 확장 프로그램</div>
+      <div class="ext-list">
+        <div class="ext-row">
+          <div class="ext-icon">🔍</div>
+          <div>
+            <div class="ext-name">GitLens</div>
+            <div class="ext-desc">각 코드 줄마다 누가, 언제 수정했는지 표시. 커밋 히스토리를 시각적으로 탐색</div>
+          </div>
+        </div>
+        <div class="ext-row">
+          <div class="ext-icon">📊</div>
+          <div>
+            <div class="ext-name">Git Graph</div>
+            <div class="ext-desc">브랜치 흐름을 그래프로 시각화. 복잡한 브랜치 구조를 한눈에 파악 가능</div>
+          </div>
+        </div>
+        <div class="ext-row">
+          <div class="ext-icon">📜</div>
+          <div>
+            <div class="ext-name">Git History</div>
+            <div class="ext-desc">파일별 변경 이력을 타임라인으로 확인. 특정 버전 비교 및 복원</div>
+          </div>
+        </div>
+        <div class="ext-row">
+          <div class="ext-icon">🚫</div>
+          <div>
+            <div class="ext-name">.gitignore Generator</div>
+            <div class="ext-desc">Git에 올리지 않을 파일 목록을 자동 생성. node_modules, .env 등 자동 제외</div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text">확장 설치 방법: VSCode 왼쪽 사이드바 확장 아이콘(Ctrl+Shift+X) → 검색창에 이름 입력 → Install 클릭</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 2회차</div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">← 이전</button>
+        <button class="nav-btn" onclick="changeSlide(1)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 슬라이드 4: 바이브코딩 -->
+  <div class="slide">
+    <div>
+      <div class="slide-number">2회차 · 04 / 07</div>
+      <div class="slide-tag">바이브코딩</div>
+      <div class="slide-title">바이브코딩으로 앱 만들어서 Push하기</div>
+      <div class="slide-subtitle">AI와 함께 앱을 만들고 GitHub에 올리는 전체 흐름을 실습합니다</div>
+      <div class="flow">
+        <div class="flow-box"><div class="flow-label">① AI 활용</div><div class="flow-name">바이브코딩</div><div class="flow-desc">Claude·Cursor로 코드 생성</div></div>
+        <div class="flow-arrow"><div class="arrow-icon">→</div></div>
+        <div class="flow-box"><div class="flow-label">② 저장</div><div class="flow-name">add · commit</div><div class="flow-desc">버전 기록</div></div>
+        <div class="flow-arrow"><div class="arrow-icon">→</div></div>
+        <div class="flow-box"><div class="flow-label">③ 공개</div><div class="flow-name">git push</div><div class="flow-desc">GitHub에 올리기</div></div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="section-label">바이브코딩 도구</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">🤖</div>
+              <div><div class="step-title">Claude / ChatGPT</div><div class="step-desc">요구사항을 말로 설명하면 코드 생성</div></div>
+            </div>
+            <div class="step">
+              <div class="step-num">⚡</div>
+              <div><div class="step-title">Cursor / Windsurf</div><div class="step-desc">VSCode 기반 AI 코딩 에디터. 실시간 코드 제안</div></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">실습 순서</div>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div><div class="step-title">AI로 간단한 앱 코드 생성</div><div class="step-desc">예: 할 일 목록 앱, 계산기, 날씨 앱</div></div></div>
+            <div class="step"><div class="step-num">2</div><div><div class="step-title">VSCode에서 파일 저장</div><div class="step-desc">생성된 코드를 프로젝트 폴더에 저장</div></div></div>
+            <div class="step"><div class="step-num">3</div><div><div class="step-title">add → commit → push</div><div class="step-desc">GitHub 레포에 올리기</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <div class="tline"><span class="t-o"># AI로 만든 앱 파일을 GitHub에 올리는 흐름</span></div>
+        <div class="tline"><span class="t-p">$ </span><span class="t-c">git add .</span></div>
+        <div class="tline"><span class="t-p">$ </span><span class="t-c">git commit -m "AI로 할 일 목록 앱 생성"</span></div>
+        <div class="tline"><span class="t-p">$ </span><span class="t-c">git push</span></div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 2회차</div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">← 이전</button>
+        <button class="nav-btn" onclick="changeSlide(1)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 슬라이드 5: 브랜치 활용 -->
+  <div class="slide">
+    <div>
+      <div class="slide-number">2회차 · 05 / 07</div>
+      <div class="slide-tag">브랜치 활용</div>
+      <div class="slide-title">브랜치 활용 — 수정하고 합치기</div>
+      <div class="slide-subtitle">실제 개발 흐름처럼 브랜치를 만들고 기능을 추가한 뒤 main에 합칩니다</div>
+      <div class="two-col" style="margin-bottom:16px;">
+        <div>
+          <div class="section-label">실습 시나리오</div>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div><div class="step-title">main 브랜치 확인</div><div class="step-desc">현재 main에서 시작. 안정된 상태 유지</div></div></div>
+            <div class="step"><div class="step-num">2</div><div><div class="step-title">새 기능 브랜치 생성</div><div class="step-desc"><span style="font-family:monospace; font-size:11px; color:#0F6E56;">git switch -c add-feature</span></div></div></div>
+            <div class="step"><div class="step-num">3</div><div><div class="step-title">기능 추가 후 커밋</div><div class="step-desc">코드 수정 → add → commit</div></div></div>
+            <div class="step"><div class="step-num">4</div><div><div class="step-title">main으로 돌아와 merge</div><div class="step-desc"><span style="font-family:monospace; font-size:11px; color:#0F6E56;">git switch main → git merge add-feature</span></div></div></div>
+            <div class="step"><div class="step-num">5</div><div><div class="step-title">브랜치 삭제 후 push</div><div class="step-desc"><span style="font-family:monospace; font-size:11px; color:#0F6E56;">git branch -d add-feature → git push</span></div></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">터미널 실습</div>
+          <div class="terminal" style="margin-bottom:0;">
+            <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+            <div class="tline"><span class="t-p">$ </span><span class="t-c">git switch -c add-feature</span></div>
+            <div class="tline"><span class="t-o">Switched to a new branch 'add-feature'</span></div>
+            <div class="tline"><span class="t-o"># 코드 수정 후</span></div>
+            <div class="tline"><span class="t-p">$ </span><span class="t-c">git add . && git commit -m "기능 추가"</span></div>
+            <div class="tline"><span class="t-p">$ </span><span class="t-c">git switch main</span></div>
+            <div class="tline"><span class="t-p">$ </span><span class="t-c">git merge add-feature</span></div>
+            <div class="tline"><span class="t-o">Updating a1b2c3d..e4f5g6h</span></div>
+            <div class="tline"><span class="t-p">$ </span><span class="t-c">git branch -d add-feature</span></div>
+            <div class="tline"><span class="t-p">$ </span><span class="t-c">git push</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text">기능 하나 = 브랜치 하나 원칙을 지키면 나중에 문제가 생겼을 때 해당 브랜치만 되돌리면 됩니다. main은 항상 동작하는 상태로 유지하세요.</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 2회차</div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">← 이전</button>
+        <button class="nav-btn" onclick="changeSlide(1)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 슬라이드 6: 충돌 해결 -->
+  <div class="slide">
+    <div>
+      <div class="slide-number">2회차 · 06 / 07</div>
+      <div class="slide-tag">충돌 해결</div>
+      <div class="slide-title">충돌 해결 연습하기</div>
+      <div class="slide-subtitle">같은 파일을 두 브랜치에서 수정했을 때 생기는 충돌을 해결하는 방법을 익힙니다</div>
+      <div class="conflict-box">
+        <div class="conflict-card">
+          <div class="conflict-title" style="color:#e24b4a;">⚠️ 충돌 발생 시 파일 모습</div>
+          <div class="conflict-code">
+            <div class="c-gray">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div>
+            <div class="c-red">main 브랜치의 내용</div>
+            <div class="c-gray">=======</div>
+            <div class="c-blue">feature 브랜치의 내용</div>
+            <div class="c-gray">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature</div>
+          </div>
+        </div>
+        <div class="conflict-card">
+          <div class="conflict-title" style="color:#0F6E56;">✅ 해결 후 파일 모습</div>
+          <div class="conflict-code">
+            <div style="color:#1a1a1a;">원하는 내용만 남기고</div>
+            <div style="color:#1a1a1a;">충돌 표시 기호를 모두 삭제</div>
+            <div style="color:#888; margin-top:8px;"># 그 다음:</div>
+            <div style="color:#0F6E56;">git add .</div>
+            <div style="color:#0F6E56;">git commit -m "충돌 해결"</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-label">충돌 해결 단계</div>
+      <div class="steps" style="margin-bottom:16px;">
+        <div class="step"><div class="step-num">1</div><div><div class="step-title">충돌 파일 확인</div><div class="step-desc">git status 로 충돌난 파일 목록 확인 (both modified 표시)</div></div></div>
+        <div class="step"><div class="step-num">2</div><div><div class="step-title">파일 열어서 직접 수정</div><div class="step-desc">VSCode에서 충돌 표시 기호 제거 후 원하는 내용만 남기기. VSCode는 Accept Current / Accept Incoming 버튼 제공</div></div></div>
+        <div class="step"><div class="step-num">3</div><div><div class="step-title">수정 후 다시 커밋</div><div class="step-desc">git add . → git commit -m "충돌 해결"</div></div></div>
+      </div>
+      <div class="warn-box">
+        <div class="tip-icon">⚠️</div>
+        <div class="warn-text">충돌은 실수가 아닙니다! 협업에서 자연스럽게 발생하는 상황이에요. 당황하지 말고 충돌 파일을 열어 &lt;&lt;&lt;, ===, &gt;&gt;&gt; 기호만 찾아서 정리하면 됩니다.</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 2회차</div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">← 이전</button>
+        <button class="nav-btn" onclick="changeSlide(1)">다음 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 슬라이드 7: 배포 -->
+  <div class="slide">
+    <div>
+      <div class="slide-number">2회차 · 07 / 07</div>
+      <div class="slide-tag">배포</div>
+      <div class="slide-title">배포하기 — GitHub Pages</div>
+      <div class="slide-subtitle">GitHub에 올린 파일을 무료로 웹사이트로 공개하는 방법을 익힙니다</div>
+      <div class="flow" style="margin-bottom:20px;">
+        <div class="flow-box"><div class="flow-label">내 컴퓨터</div><div class="flow-name">HTML 파일</div><div class="flow-desc">index.html 작성</div></div>
+        <div class="flow-arrow"><div class="flow-cmd">git push</div><div class="arrow-icon">→</div></div>
+        <div class="flow-box"><div class="flow-label">GitHub</div><div class="flow-name">레포지토리</div><div class="flow-desc">파일 업로드</div></div>
+        <div class="flow-arrow"><div class="flow-cmd">Pages 설정</div><div class="arrow-icon">→</div></div>
+        <div class="flow-box"><div class="flow-label">인터넷</div><div class="flow-name">웹사이트 공개</div><div class="flow-desc">누구나 접속 가능</div></div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="section-label">GitHub Pages 설정</div>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div><div class="step-title">레포 Settings 열기</div><div class="step-desc">GitHub 레포 상단 Settings 탭 클릭</div></div></div>
+            <div class="step"><div class="step-num">2</div><div><div class="step-title">Pages 메뉴 선택</div><div class="step-desc">왼쪽 사이드바에서 Pages 클릭</div></div></div>
+            <div class="step"><div class="step-num">3</div><div><div class="step-title">Branch 설정</div><div class="step-desc">Source: Deploy from a branch → main → / (root) → Save</div></div></div>
+            <div class="step"><div class="step-num">4</div><div><div class="step-title">배포 완료 확인</div><div class="step-desc">1~2분 후 링크 생성: 아이디.github.io/레포명</div></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">배포 후 활용</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">🔗</div>
+              <div><div class="step-title">링크 공유</div><div class="step-desc">생성된 URL을 SNS, 이메일, README에 공유</div></div>
+            </div>
+            <div class="step">
+              <div class="step-num">🔄</div>
+              <div><div class="step-title">자동 업데이트</div><div class="step-desc">push할 때마다 사이트가 자동으로 갱신됩니다</div></div>
+            </div>
+            <div class="step">
+              <div class="step-num">📁</div>
+              <div><div class="step-title">index.html 필수</div><div class="step-desc">루트 폴더에 index.html 이 있어야 첫 페이지로 연결됩니다</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box" style="margin-top:16px;">
+        <div class="tip-icon">🎉</div>
+        <div class="tip-text">GitHub Pages는 완전 무료입니다! 포트폴리오 사이트, 강의 자료 사이트, 바이브코딩 결과물을 모두 여기에 올려두면 이력서처럼 활용할 수 있어요.</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-info">Git &amp; GitHub 강의 · 2회차 완료 <span class="badge-done">전체 완료 🎉</span></div>
+      <div class="nav-btns">
+        <button class="nav-btn prev" onclick="changeSlide(-1)">← 이전</button>
+        <button class="nav-btn" disabled>완료</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  function changeSlide(dir) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(total - 1, current + dir));
+    slides[current].classList.add('active');
+    document.getElementById('slide-counter').textContent = (current + 1) + ' / ' + total;
+    document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

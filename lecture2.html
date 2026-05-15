@@ -120,6 +120,10 @@ body { font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 .nav-btn.prev:hover { background:#f5f5f3; }
 .nav-btn:disabled { opacity:0.35; cursor:not-allowed; }
 .badge-done { display:inline-block; font-size:10px; font-weight:600; background:#EAF3DE; color:#3B6D11; border-radius:20px; padding:2px 10px; margin-left:8px; }
+.home-btn { color:#888; border-color:#e0e0de; }
+.home-btn:hover { background:#f5f5f3; }
+.prev-lec-btn { background:#1D9E75; color:#fff; border-color:#1D9E75; font-weight:500; }
+.prev-lec-btn:hover { background:#085041; border-color:#085041; }
 </style>
 </head>
 <body>
@@ -527,7 +531,14 @@ body { font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
     </div>
     <div class="tip-box"><div class="tip-icon">🚀</div><div class="tip-text">이제 Git과 GitHub의 핵심 흐름을 모두 익혔어요! 앞으로는 강의 자료, 바이브코딩 결과물, 포트폴리오를 GitHub로 관리하고 공개해보세요.</div></div>
   </div>
-  <div class="nav"><div class="nav-info">Git &amp; GitHub 강의 · 2회차 완료 <span class="badge-done">전체 완료 🎉</span></div><div class="nav-btns"><button class="nav-btn prev" onclick="go(-1)">← 이전</button><button class="nav-btn" disabled>완료</button></div></div>
+  <div class="nav">
+    <div class="nav-info">Git &amp; GitHub 강의 · 2회차 완료 <span class="badge-done">전체 완료 🎉</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn prev" onclick="go(-1)">← 이전</button>
+      <button class="nav-btn home-btn" onclick="location.href='README.md'">🏠 강의 목록</button>
+      <button class="nav-btn prev-lec-btn" onclick="location.href='lecture1.html'">← 1회차로 이동</button>
+    </div>
+  </div>
 </div>
 
 </div>

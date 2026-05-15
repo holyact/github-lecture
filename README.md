@@ -96,8 +96,8 @@ GitHub Push 실습                배포 (GitHub Pages)
 | Git 공식 다운로드 | [git-scm.com](https://git-scm.com) |
 | GitHub 가입 | [github.com](https://github.com) |
 | VSCode 다운로드 | [code.visualstudio.com](https://code.visualstudio.com) |
-| 강사 유튜브 채널 | ([링크 입력](https://www.youtube.com/channel/UC3bBsiQBCDpYjJdmrbW3wuA)) |
-| 강사 블로그 | ([링크 입력](https://blog.naver.com/makerhanssem)) |
+| 강사 유튜브 채널 | ([메이커한쌤 유튜브](https://www.youtube.com/channel/UC3bBsiQBCDpYjJdmrbW3wuA)) |
+| 강사 블로그 | ([메이커한쌤블로그](https://blog.naver.com/makerhanssem)) |
 
 <br>
 

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git & GitHub 강의 자료</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif; background:#f5f5f3; min-height:100vh; padding:40px 16px; }
+.container { max-width:780px; margin:0 auto; }
+
+/* 헤더 */
+.site-header { margin-bottom:40px; }
+.site-title { font-size:26px; font-weight:700; color:#1a1a1a; margin-bottom:6px; }
+.site-title span { color:#378ADD; }
+.site-desc { font-size:14px; color:#888; }
+
+/* 강의 정보 카드 */
+.info-card { background:#fff; border:1px solid #e8e8e6; border-radius:14px; padding:24px 28px; margin-bottom:32px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.info-row { display:flex; align-items:center; gap:10px; }
+.info-icon { font-size:16px; flex-shrink:0; }
+.info-label { font-size:12px; color:#aaa; font-weight:600; letter-spacing:0.04em; margin-right:4px; }
+.info-value { font-size:13px; color:#444; }
+
+/* 회차 섹션 */
+.lecture-section { background:#fff; border:1px solid #e8e8e6; border-radius:14px; padding:28px 32px; margin-bottom:20px; }
+.lecture-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+.lecture-badge { font-size:11px; font-weight:600; border-radius:20px; padding:4px 14px; }
+.badge-1 { background:#E6F1FB; color:#0C447C; }
+.badge-2 { background:#E1F5EE; color:#085041; }
+.lecture-title { font-size:18px; font-weight:700; color:#1a1a1a; margin-bottom:2px; }
+.lecture-meta { font-size:12px; color:#aaa; }
+.open-btn { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; font-family:inherit; border:none; border-radius:8px; padding:10px 20px; cursor:pointer; text-decoration:none; transition:all 0.2s; }
+.open-btn-1 { background:#378ADD; color:#fff; }
+.open-btn-1:hover { background:#185FA5; }
+.open-btn-2 { background:#1D9E75; color:#fff; }
+.open-btn-2:hover { background:#085041; }
+
+/* 목차 테이블 */
+.syllabus { width:100%; border-collapse:collapse; }
+.syllabus th { font-size:11px; font-weight:600; color:#aaa; letter-spacing:0.06em; text-align:left; padding:6px 10px; border-bottom:1px solid #f0f0ee; }
+.syllabus td { font-size:12px; color:#555; padding:8px 10px; border-bottom:1px solid #f8f8f6; vertical-align:middle; }
+.syllabus tr:last-child td { border-bottom:none; }
+.syllabus td:first-child { color:#bbb; font-family:'Courier New',monospace; width:40px; }
+.type-badge { display:inline-block; font-size:10px; font-weight:600; padding:2px 8px; border-radius:20px; white-space:nowrap; }
+.type-explain { background:#f0f0ee; color:#888; }
+.type-practice { background:#EAF3DE; color:#3B6D11; }
+.type-quiz { background:#EDE9FE; color:#4C1D95; }
+
+/* 링크 섹션 */
+.links-section { background:#fff; border:1px solid #e8e8e6; border-radius:14px; padding:24px 28px; margin-bottom:20px; }
+.links-title { font-size:14px; font-weight:700; color:#1a1a1a; margin-bottom:14px; }
+.link-list { display:flex; flex-direction:column; gap:8px; }
+.link-item { display:flex; align-items:center; gap:10px; padding:10px 14px; background:#f8f8f6; border-radius:8px; text-decoration:none; transition:background 0.15s; }
+.link-item:hover { background:#f0f0ee; }
+.link-icon { font-size:16px; flex-shrink:0; }
+.link-label { font-size:13px; color:#444; font-weight:500; }
+.link-url { font-size:11px; color:#aaa; margin-left:auto; }
+
+/* 푸터 */
+.footer { text-align:center; font-size:12px; color:#bbb; padding:24px 0 8px; }
+.footer a { color:#378ADD; text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- 헤더 -->
+  <div class="site-header">
+    <div class="site-title">🐙 Git &amp; <span>GitHub</span> 강의 자료</div>
+    <div class="site-desc">버전 관리부터 협업, 배포까지 — 실습 중심 2회차 강의</div>
+  </div>
+
+  <!-- 강의 정보 -->
+  <div class="info-card">
+    <div class="info-row"><div class="info-icon">📋</div><span class="info-label">대상</span><span class="info-value">대학생 / 성인</span></div>
+    <div class="info-row"><div class="info-icon">🕐</div><span class="info-label">구성</span><span class="info-value">2회차 × 4시간</span></div>
+    <div class="info-row"><div class="info-icon">👨‍🏫</div><span class="info-label">강사</span><span class="info-value">한승현</span></div>
+    <div class="info-row"><div class="info-icon">📬</div><span class="info-label">문의</span><span class="info-value">shhan67@gmail.com</span></div>
+  </div>
+
+  <!-- 1회차 -->
+  <div class="lecture-section">
+    <div class="lecture-header">
+      <div>
+        <div style="margin-bottom:6px;"><span class="lecture-badge badge-1">1회차</span></div>
+        <div class="lecture-title">Git 기초와 GitHub 시작하기</div>
+        <div class="lecture-meta">4시간 · 설명 8개 + 실습 5개 · 총 13슬라이드</div>
+      </div>
+      <a class="open-btn open-btn-1" href="lecture1.html">▶ 1회차 시작하기</a>
+    </div>
+    <table class="syllabus">
+      <thead><tr><th>No.</th><th>종류</th><th>주제</th></tr></thead>
+      <tbody>
+        <tr><td>01</td><td><span class="type-badge type-explain">📖 설명</span></td><td>Git과 GitHub 개념 이해</td></tr>
+        <tr><td>02</td><td><span class="type-badge type-explain">📖 설명</span></td><td>Git 설치하기 + 체크포인트</td></tr>
+        <tr><td>03</td><td><span class="type-badge type-explain">📖 설명</span></td><td>Git Bash 기본 명령어</td></tr>
+        <tr><td>04</td><td><span class="type-badge type-practice">🟢 실습</span></td><td>Git Bash 명령어 직접 해보기</td></tr>
+        <tr><td>05</td><td><span class="type-badge type-explain">📖 설명</span></td><td>Git Bash로 문서 만들기</td></tr>
+        <tr><td>06</td><td><span class="type-badge type-practice">🟢 실습</span></td><td>문서 만들기 직접 해보기</td></tr>
+        <tr><td>07</td><td><span class="type-badge type-explain">📖 설명</span></td><td>add 및 commit 하기</td></tr>
+        <tr><td>08</td><td><span class="type-badge type-practice">🟢 실습</span></td><td>add &amp; commit 직접 해보기</td></tr>
+        <tr><td>09</td><td><span class="type-badge type-explain">📖 설명</span></td><td>.gitignore — 올리면 안 되는 파일 관리</td></tr>
+        <tr><td>10</td><td><span class="type-badge type-explain">📖 설명</span></td><td>GitHub 로그인 후 Push하기</td></tr>
+        <tr><td>11</td><td><span class="type-badge type-practice">🟢 실습</span></td><td>GitHub Push 직접 해보기</td></tr>
+        <tr><td>12</td><td><span class="type-badge type-explain">📖 설명</span></td><td>브랜치 기초 익히기</td></tr>
+        <tr><td>13</td><td><span class="type-badge type-practice">🟢 실습</span></td><td>브랜치 직접 해보기</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 2회차 -->
+  <div class="lecture-section">
+    <div class="lecture-header">
+      <div>
+        <div style="margin-bottom:6px;"><span class="lecture-badge badge-2">2회차</span></div>
+        <div class="lecture-title">VSCode 활용과 실전 배포</div>
+        <div class="lecture-meta">4시간 · 설명 7개 + 실습 2개 + 퀴즈 1개 · 총 11슬라이드</div>
+      </div>
+      <a class="open-btn open-btn-2" href="lecture2.html">▶ 2회차 시작하기</a>
+    </div>
+    <table class="syllabus">
+      <thead><tr><th>No.</th><th>종류</th><th>주제</th></tr></thead>
+      <tbody>
+        <tr><td>01</td><td><span class="type-badge type-explain">📖 설명</span></td><td>1회차 핵심 복습</td></tr>
+        <tr><td>02</td><td><span class="type-badge type-quiz">🟣 퀴즈</span></td><td>복습 퀴즈</td></tr>
+        <tr><td>03</td><td><span class="type-badge type-explain">📖 설명</span></td><td>VSCode 활용하기</td></tr>
+        <tr><td>04</td><td><span class="type-badge type-explain">📖 설명</span></td><td>Git 관련 확장 앱 설치</td></tr>
+        <tr><td>05</td><td><span class="type-badge type-explain">📖 설명</span></td><td>바이브코딩으로 앱 만들어서 Push하기</td></tr>
+        <tr><td>06</td><td><span class="type-badge type-explain">📖 설명</span></td><td>브랜치 활용 — 수정하고 합치기</td></tr>
+        <tr><td>07</td><td><span class="type-badge type-practice">🟢 실습</span></td><td>브랜치 활용 직접 해보기</td></tr>
+        <tr><td>08</td><td><span class="type-badge type-explain">📖 설명</span></td><td>충돌 해결 연습하기</td></tr>
+        <tr><td>09</td><td><span class="type-badge type-practice">🟢 실습</span></td><td>충돌 해결 직접 해보기</td></tr>
+        <tr><td>10</td><td><span class="type-badge type-explain">📖 설명</span></td><td>배포하기 (GitHub Pages)</td></tr>
+        <tr><td>11</td><td><span class="type-badge type-explain">📖 설명</span></td><td>전체 마무리 정리</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 참고 링크 -->
+  <div class="links-section">
+    <div class="links-title">🔗 참고 링크</div>
+    <div class="link-list">
+      <a class="link-item" href="https://git-scm.com" target="_blank"><div class="link-icon">🌿</div><div class="link-label">Git 공식 다운로드</div><div class="link-url">git-scm.com</div></a>
+      <a class="link-item" href="https://github.com" target="_blank"><div class="link-icon">🐙</div><div class="link-label">GitHub 가입하기</div><div class="link-url">github.com</div></a>
+      <a class="link-item" href="https://code.visualstudio.com" target="_blank"><div class="link-icon">💙</div><div class="link-label">VSCode 다운로드</div><div class="link-url">code.visualstudio.com</div></a>
+      <a class="link-item" href="(유튜브 링크 입력)" target="_blank"><div class="link-icon">▶️</div><div class="link-label">강사 유튜브 채널</div><div class="link-url">(링크 입력)</div></a>
+      <a class="link-item" href="(블로그 링크 입력)" target="_blank"><div class="link-icon">✍️</div><div class="link-label">강사 블로그</div><div class="link-url">(링크 입력)</div></a>
+    </div>
+  </div>
+
+  <div class="footer">⭐ Star를 눌러두시면 새 자료 확인이 편해요!</div>
+
+</div>
+</body>
+</html>
